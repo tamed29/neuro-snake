@@ -9,7 +9,7 @@ import { FaTrophy, FaMedal } from 'react-icons/fa';
 
 export default function LeaderboardPage() {
   const [scores, setScores] = useState<LeaderboardEntry[]>([]);
-  const [filter, setFilter] = useState<Difficulty | 'All'>('All');
+  const [filter, setFilter] = useState<Difficulty>('Insane');
   const [user, setUser] = useState(auth.currentUser);
 
   useEffect(() => {
@@ -20,9 +20,10 @@ export default function LeaderboardPage() {
   }, []);
 
   useEffect(() => {
+    setScores([]); // Clear old scores immediately on filter change
     const unsubscribe = subscribeToLeaderboard(
       setScores,
-      filter === 'All' ? undefined : filter
+      filter
     );
     return () => unsubscribe();
   }, [filter]);
@@ -46,15 +47,14 @@ export default function LeaderboardPage() {
         </motion.h1>
 
         <div className="flex flex-wrap gap-3 justify-center mb-8">
-          {(['All', 'Easy', 'Normal', 'Hard', 'Insane'] as const).map((difficulty) => (
+          {(['Easy', 'Normal', 'Hard', 'Insane'] as const).map((difficulty) => (
             <motion.button
               key={difficulty}
               onClick={() => setFilter(difficulty)}
-              className={`px-6 py-2 rounded-lg font-semibold transition-all ${
-                filter === difficulty
-                  ? 'bg-primary-green text-black shadow-green-glow'
-                  : 'bg-primary-card border border-primary-border text-primary-text hover:border-primary-green'
-              }`}
+              className={`px-6 py-2 rounded-lg font-semibold transition-all ${filter === difficulty
+                ? 'bg-primary-green text-black shadow-green-glow'
+                : 'bg-primary-card border border-primary-border text-primary-text hover:border-primary-green'
+                }`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -80,11 +80,10 @@ export default function LeaderboardPage() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className={`p-4 flex items-center gap-4 ${
-                    user && entry.uid === user.uid
-                      ? 'bg-primary-green/10 border-l-4 border-primary-green'
-                      : ''
-                  }`}
+                  className={`p-4 flex items-center gap-4 ${user && entry.uid === user.uid
+                    ? 'bg-primary-green/10 border-l-4 border-primary-green'
+                    : ''
+                    }`}
                 >
                   <div className="w-12 flex justify-center">{getRankIcon(index)}</div>
                   <div className="flex-1">

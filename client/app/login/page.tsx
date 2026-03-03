@@ -6,9 +6,10 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { LogIn, Mail, Lock, Gamepad2, Chrome, Github, ArrowRight } from 'lucide-react';
 import { auth, googleProvider, githubProvider, signInWithPopup, signInWithEmailAndPassword } from '@/lib/firebase';
-import { createUserProfile, getUserProfile } from '@/lib/user';
+import { createUserProfile, getUserProfile, ensureAdminProfile } from '@/lib/user';
 
 function LoginContent() {
+    const [isAdminLogin, setIsAdminLogin] = useState(false);
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -25,8 +26,25 @@ function LoginContent() {
         setLoading(true);
 
         try {
-            await signInWithEmailAndPassword(auth, formData.email, formData.password);
-            router.push('/game');
+            const credential = await signInWithEmailAndPassword(auth, formData.email, formData.password);
+
+            if (isAdminLogin && formData.email === 'snake@gmail.com') {
+                await ensureAdminProfile(credential.user.uid, formData.email);
+            }
+
+            // Route admins to admin dashboard, regular users to game
+            const profile = await getUserProfile(credential.user.uid);
+
+            if (isAdminLogin) {
+                if (profile?.role === 'admin' || formData.email === 'snake@gmail.com') {
+                    router.push('/admin');
+                } else {
+                    await auth.signOut();
+                    setError('Access denied. Administrator privileges required.');
+                }
+            } else {
+                router.push('/game');
+            }
         } catch (err: any) {
             console.error(err);
             if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
@@ -58,7 +76,12 @@ function LoginContent() {
                 });
             }
 
-            router.push('/game');
+            // Route admins to admin dashboard, regular users to game
+            if (profile?.role === 'admin') {
+                router.push('/admin');
+            } else {
+                router.push('/game');
+            }
         } catch (err: any) {
             console.error(err);
             setError(err.message || 'Social login failed.');
@@ -82,10 +105,10 @@ function LoginContent() {
                         <Gamepad2 size={28} className="text-primary-green" />
                     </div>
                     <h2 className="text-3xl sm:text-4xl font-black text-white italic tracking-tighter uppercase mb-2">
-                        Access <span className="text-primary-green glow-text">Portal</span>
+                        {isAdminLogin ? 'Admin' : 'Access'} <span className="text-primary-green glow-text">{isAdminLogin ? 'Access' : 'Portal'}</span>
                     </h2>
                     <p className="text-primary-text/40 text-[10px] font-bold uppercase tracking-[0.2em] text-center">
-                        Sign in to continue
+                        {isAdminLogin ? 'Restricted to authorised administrators' : 'Sign in to continue'}
                     </p>
                 </div>
 
@@ -149,41 +172,57 @@ function LoginContent() {
                     </motion.button>
                 </form>
 
-                <div className="relative my-8">
-                    <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-white/5"></div>
-                    </div>
-                    <div className="relative flex justify-center text-[10px] uppercase tracking-widest">
-                        <span className="bg-[#0D1117] px-4 text-primary-text/20 font-bold">Social Identity</span>
-                    </div>
-                </div>
+                {!isAdminLogin && (
+                    <>
+                        <div className="relative my-8">
+                            <div className="absolute inset-0 flex items-center">
+                                <div className="w-full border-t border-white/5"></div>
+                            </div>
+                            <div className="relative flex justify-center text-[10px] uppercase tracking-widest">
+                                <span className="bg-[#0D1117] px-4 text-primary-text/20 font-bold">Social Identity</span>
+                            </div>
+                        </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                    <motion.button
-                        whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.05)' }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => handleSocialLogin(googleProvider)}
-                        className="flex items-center justify-center gap-2 py-3 rounded-xl border border-white/5 bg-white/[0.02] text-white text-xs font-bold transition-colors"
-                    >
-                        <Chrome size={16} className="text-primary-green" /> Google
-                    </motion.button>
-                    <motion.button
-                        whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.05)' }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => handleSocialLogin(githubProvider)}
-                        className="flex items-center justify-center gap-2 py-3 rounded-xl border border-white/5 bg-white/[0.02] text-white text-xs font-bold transition-colors"
-                    >
-                        <Github size={16} className="text-primary-green" /> GitHub
-                    </motion.button>
-                </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <motion.button
+                                whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.05)' }}
+                                whileTap={{ scale: 0.98 }}
+                                onClick={() => handleSocialLogin(googleProvider)}
+                                className="flex items-center justify-center gap-2 py-3 rounded-xl border border-white/5 bg-white/[0.02] text-white text-xs font-bold transition-colors"
+                            >
+                                <Chrome size={16} className="text-primary-green" /> Google
+                            </motion.button>
+                            <motion.button
+                                whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.05)' }}
+                                whileTap={{ scale: 0.98 }}
+                                onClick={() => handleSocialLogin(githubProvider)}
+                                className="flex items-center justify-center gap-2 py-3 rounded-xl border border-white/5 bg-white/[0.02] text-white text-xs font-bold transition-colors"
+                            >
+                                <Github size={16} className="text-primary-green" /> GitHub
+                            </motion.button>
+                        </div>
+                    </>
+                )}
 
-                <div className="mt-8 pt-6 border-t border-white/5 text-center">
-                    <p className="text-xs text-primary-text/40">
-                        New here?{' '}
-                        <Link href="/register" className="text-primary-green hover:text-primary-green/80 ml-1 font-semibold transition-colors uppercase tracking-wider">
-                            Initialize Account
-                        </Link>
-                    </p>
+                <div className="mt-8 pt-6 border-t border-white/5 flex flex-col items-center gap-4">
+                    {!isAdminLogin && (
+                        <p className="text-xs text-primary-text/40">
+                            New here?{' '}
+                            <Link href="/register" className="text-primary-green hover:text-primary-green/80 ml-1 font-semibold transition-colors uppercase tracking-wider">
+                                Initialize Account
+                            </Link>
+                        </p>
+                    )}
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setIsAdminLogin(!isAdminLogin);
+                            setError('');
+                        }}
+                        className="text-[10px] uppercase tracking-widest text-primary-text/40 hover:text-primary-green transition-colors font-bold"
+                    >
+                        {isAdminLogin ? 'Switch to User Log In' : 'Admin Login'}
+                    </button>
                 </div>
             </motion.div>
         </div>

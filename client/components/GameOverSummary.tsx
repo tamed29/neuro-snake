@@ -34,8 +34,17 @@ export default function GameOverSummary({ onRestart }: GameOverSummaryProps) {
 
     return (
         <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{
+                opacity: 1,
+                scale: 1,
+                y: 0,
+                x: [0, -10, 10, -10, 10, 0]
+            }}
+            transition={{
+                duration: 0.5,
+                times: [0, 0.1, 0.2, 0.3, 0.4, 1]
+            }}
             className="premium-card border border-primary-border rounded-[3rem] p-10 max-w-lg w-full shadow-2xl relative overflow-hidden"
         >
             <div className="absolute top-0 right-0 w-32 h-32 bg-primary-green/5 blur-[60px] rounded-full -z-10" />

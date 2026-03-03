@@ -65,6 +65,7 @@ export interface GameState {
   multiplier: number;
   foodEatenCount: number;
   level: number;
+  growthPending: number;
   settings: GameSettings;
 }
 

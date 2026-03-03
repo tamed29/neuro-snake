@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { GameState, Direction, Difficulty, Position, SpecialFood, ThemeType, ControlType, GameSettings, Vector2 } from '@/types/game.types';
 import { sounds } from '@/lib/sounds';
 
-const GRID_SIZE = 20;
+const GRID_SIZE = 16;
 
 const STORAGE_KEY = 'snake-game-settings';
 
@@ -11,21 +11,23 @@ const DEFAULT_SETTINGS: GameSettings = {
   soundEnabled: true,
   controlType: 'ARROWS',
   baseSpeed: 100,
-  physicsMode: true,
-  showGhost: true,
+  physicsMode: false,
+  showGhost: false, // Disabled based on user feedback
+};
+
+const DIFFICULTY_CONFIG = {
+  Easy: { speed: 200, obstacles: false, growth: 1 },
+  Normal: { speed: 150, obstacles: false, growth: 1 },
+  Hard: { speed: 110, obstacles: false, growth: 2 },
+  Insane: { speed: 70, obstacles: false, growth: 2 }
 };
 
 const getInitialSpeed = (difficulty: Difficulty): number => {
-  switch (difficulty) {
-    case 'Easy': return 150;
-    case 'Normal': return 100;
-    case 'Hard': return 70;
-    case 'Insane': return 50;
-  }
+  return DIFFICULTY_CONFIG[difficulty]?.speed || 90;
 };
 
 const generateObstacles = (difficulty: Difficulty, snake: Position[]): Position[] => {
-  if (difficulty === 'Easy' || difficulty === 'Normal') return [];
+  if (!DIFFICULTY_CONFIG[difficulty]?.obstacles) return [];
 
   const count = difficulty === 'Hard' ? 5 : 10;
   const obstacles: Position[] = [];
@@ -83,9 +85,11 @@ interface GameStore extends GameState {
 }
 
 const INITIAL_SNAKE: Vector2[] = [
-  { x: 10, y: 10 },
-  { x: 9, y: 10 },
-  { x: 8, y: 10 },
+  { x: 8, y: 8 },
+  { x: 7, y: 8 },
+  { x: 6, y: 8 },
+  { x: 5, y: 8 },
+  { x: 4, y: 8 },
 ];
 
 const INITIAL_FOOD: Position = { x: 15, y: 10 };
@@ -112,6 +116,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   multiplier: 1,
   foodEatenCount: 0,
   level: 1,
+  growthPending: 0,
   replayRecording: [],
   ghostFrameIndex: 0,
   isRecording: false,
@@ -154,9 +159,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const food = generateFood(INITIAL_SNAKE, obstacles);
     const initialSpeed = getInitialSpeed(difficulty);
 
-    sounds.setEnabled(get().settings.soundEnabled);
+    // Force classic mode and explicitly disable ghost based on user feedback
+    const updatedSettings = { ...get().settings, physicsMode: false, showGhost: false };
+    sounds.setEnabled(updatedSettings.soundEnabled);
 
     set({
+      settings: updatedSettings,
       snake: INITIAL_SNAKE,
       food,
       specialFood: null,
@@ -177,6 +185,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       multiplier: 1,
       foodEatenCount: 0,
       level: 1,
+      growthPending: 0,
       replayRecording: [],
       ghostFrameIndex: 0,
       isRecording: true,
@@ -212,9 +221,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
       multiplier: 1,
       foodEatenCount: 0,
       level: 1,
+      growthPending: 0,
       replayRecording: [],
       ghostFrameIndex: 0,
       isRecording: false,
+      settings: { ...get().settings, showGhost: false } // Force disable on reset
     });
   },
 
@@ -267,11 +278,23 @@ export const useGameStore = create<GameStore>((set, get) => ({
       }
     }
 
-    // Wall Collision (Torus wrap-around for physics)
-    if (head.x < 0) head.x = GRID_SIZE - 1;
-    if (head.x >= GRID_SIZE) head.x = 0;
-    if (head.y < 0) head.y = GRID_SIZE - 1;
-    if (head.y >= GRID_SIZE) head.y = 0;
+    // Boundary Collision (No wrapping)
+    if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
+      sounds.playGameOver();
+      if (typeof navigator !== 'undefined' && navigator.vibrate) {
+        navigator.vibrate(200);
+      }
+
+      const isNewBestReplay = !get().lastReplay || score > (get().lastReplay?.find(f => f.score !== undefined)?.score || 0);
+
+      set({
+        gameOver: true,
+        isPlaying: false,
+        isRecording: false,
+        lastReplay: isNewBestReplay ? replayRecording : get().lastReplay
+      });
+      return;
+    }
 
     // Self Collision
     const collisionRadius = settings.physicsMode ? 0.4 : 0.8;
@@ -300,8 +323,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
     // Head is always added
     newSnake.unshift(head);
 
-    // Food Collision Detection
-    const foodRadius = 0.8;
+    // Food Collision Detection (Refined radius for precision)
+    const foodRadius = 0.5;
     const isEatingNormal = Math.abs(head.x - food.x) < foodRadius && Math.abs(head.y - food.y) < foodRadius;
     const isEatingSpecial = specialFood && Math.abs(head.x - specialFood.x) < foodRadius && Math.abs(head.y - specialFood.y) < foodRadius;
     const isEating = isEatingNormal || isEatingSpecial;
@@ -326,7 +349,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
       if (isEatingSpecial) sounds.playSpecialEat();
       else sounds.playEat();
 
-      const points = isEatingNormal ? 10 : specialFood!.value;
+      let points = 10;
+      if (!isEatingNormal && specialFood) {
+        const timeLeft = Math.max(0, specialFood.expiresAt - now);
+        // Minimum 10, maximum 50 points based on how fast it's eaten
+        points = 10 + Math.floor((timeLeft / 5000) * 40);
+      }
       const newScore = score + Math.round(points * newMultiplier);
       const newFoodEatenCount = foodEatenCount + (isEatingNormal ? 1 : 0);
 
@@ -348,17 +376,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
         };
       }
 
-      // --- ADAPTIVE DIFFICULTY (PID-Lite) ---
-      const targetTime = 6000;
-      const performanceError = targetTime - timeSinceLastFood;
-
+      // --- FIXED DIFFICULTY (Adaptive removed) ---
       let newLevel = level;
       if (isEatingNormal && newFoodEatenCount % 10 === 0) {
         newLevel += 1;
       }
 
-      const correction = Math.floor(performanceError / 200);
-      let newSpeed = Math.max(30, Math.min(200, speed - correction));
+      let newSpeed = speed; // Speed remains constant based on chosen difficulty
 
       // Haptic Feedback
       if (typeof navigator !== 'undefined' && navigator.vibrate) {
@@ -377,11 +401,16 @@ export const useGameStore = create<GameStore>((set, get) => ({
         speed: newSpeed,
         foodEatenCount: newFoodEatenCount,
         level: newLevel,
-        snake: newSnake
+        snake: newSnake,
+        // Increased growth for harder difficulties
+        ...(isEating && DIFFICULTY_CONFIG[difficulty]?.growth > 1 ? { growthPending: (get().growthPending || 0) + (DIFFICULTY_CONFIG[difficulty].growth - 1) } : {})
       });
     } else {
-      // Pop only if not eating
-      newSnake.pop();
+      if ((get().growthPending || 0) > 0) {
+        set({ growthPending: get().growthPending - 1 });
+      } else {
+        newSnake.pop();
+      }
     }
 
     // Constraint-based body following for smooth physics

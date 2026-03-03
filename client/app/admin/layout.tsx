@@ -20,7 +20,7 @@ export default function AdminLayout({
     const handleLogout = async () => {
         try {
             await signOut(auth);
-            router.push('/admin/login');
+            router.push('/login');
         } catch (error) {
             console.error('Logout error:', error);
         }
@@ -32,17 +32,12 @@ export default function AdminLayout({
         { icon: FaGamepad, label: 'Game Settings', path: '/admin/settings' },
     ];
 
-    // Redirect non-admins to admin login (must be in useEffect, never during render)
+    // Redirect non-admins to main login (must be in useEffect, never during render)
     useEffect(() => {
-        if (!loading && !isAdmin && pathname !== '/admin/login') {
-            router.push('/admin/login');
+        if (!loading && !isAdmin) {
+            router.push('/login');
         }
-    }, [loading, isAdmin, pathname, router]);
-
-    // Admin login page: skip auth check and sidebar, render as standalone page
-    if (pathname === '/admin/login') {
-        return <>{children}</>;
-    }
+    }, [loading, isAdmin, router]);
 
     if (loading) {
         return (

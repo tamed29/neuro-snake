@@ -10,18 +10,20 @@ export const useSnakeEngine = () => {
     if (!isPlaying || isPaused) {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = undefined;
       }
       return;
     }
 
     const animate = (timestamp: number) => {
+      if (!isPlaying || isPaused) return;
+
       if (!lastUpdateRef.current) lastUpdateRef.current = timestamp;
 
       const elapsed = timestamp - lastUpdateRef.current;
 
       if (elapsed >= speed) {
         updateGame();
-        // Adjust for "overflow" time to keep the rhythm consistent
         lastUpdateRef.current = timestamp - (elapsed % speed);
       }
 
@@ -33,6 +35,7 @@ export const useSnakeEngine = () => {
     return () => {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = undefined;
       }
       lastUpdateRef.current = 0;
     };

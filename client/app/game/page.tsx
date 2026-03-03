@@ -106,26 +106,19 @@ export default function GamePage() {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 transition-all duration-700 bg-[#06080A]">
+    <div className="min-h-screen pt-24 pb-12 px-4 transition-all duration-700 bg-[#0B0F14]">
       <div className="max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-[1fr_350px] gap-8 items-start">
           <div className="flex flex-col items-center">
             {/* Header Area */}
-            <div className="w-full flex justify-between items-center mb-6 px-4">
-              <motion.h1
-                initial={{ x: -20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                className="text-4xl font-black text-primary-green glow-text italic tracking-tighter"
-              >
-                SNAKE.PRO
-              </motion.h1>
+            <div className="w-full flex justify-end items-center mb-6 px-4">
               <div className="flex items-center gap-3">
                 <SettingsPanel />
               </div>
             </div>
 
-            {/* Game Canvas Container */}
-            <div className="relative w-full overflow-hidden rounded-[2.5rem] border-[6px] border-primary-border bg-black shadow-[0_0_50px_rgba(34,197,94,0.1)] p-2 md:p-6 transition-all duration-500 hover:border-primary-green/20">
+            {/* Game Canvas Container - Simplified to remove 'double box' effect */}
+            <div className="relative w-full transition-all duration-500">
               <GameCanvas />
 
               <AnimatePresence>
@@ -197,7 +190,7 @@ export default function GamePage() {
                       onClick={handleStart}
                       className="w-full mt-4 py-5 bg-primary-green text-black rounded-2xl font-black text-xl shadow-green-glow hover:brightness-110 transition-all active:scale-95"
                     >
-                      INITIALIZE
+                      START
                     </button>
                   </div>
                   {!user && (
