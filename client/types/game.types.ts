@@ -49,7 +49,7 @@ export interface GameState {
   velocity: number; // Current speed magnitude
   score: number;
   highScore: number;
-  lastReplay?: ReplayFrame[];
+  lastReplay: ReplayFrame[] | null;
   replayRecording: ReplayFrame[];
   ghostFrameIndex: number;
   isRecording: boolean;

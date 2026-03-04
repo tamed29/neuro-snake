@@ -21,9 +21,10 @@ export default function GameCanvas() {
   // Handle responsive scaling
   useEffect(() => {
     const handleResize = () => {
-      if (!containerRef.current) return;
-      const width = containerRef.current.clientWidth;
-      const newCellSize = width / GRID_SIZE; // Don't floor here, keep it float for precise fill
+      const container = containerRef.current;
+      if (!container) return;
+      const width = container.clientWidth;
+      const newCellSize = width / GRID_SIZE;
       setCellSize(newCellSize);
       setScale(window.devicePixelRatio || 1);
     };
@@ -66,23 +67,27 @@ export default function GameCanvas() {
 
     // Obstacles
     ctx.fillStyle = theme.obstacle;
-    obstacles.forEach((obstacle) => {
+    for (let i = 0; i < obstacles.length; i++) {
+      const obstacle = obstacles[i];
       ctx.fillRect(
         obstacle.x * cellSize + 1,
         obstacle.y * cellSize + 1,
         cellSize - 2,
         cellSize - 2
       );
-    });
-  }, [cellSize, scale, obstacles, settings.theme]);
+    }
+  }, [cellSize, scale, obstacles, theme]);
 
   // Render dynamic layer (snake and food)
   useEffect(() => {
     const canvas = dynamicCanvasRef.current;
     if (!canvas || !cellSize) return;
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    const context = canvas.getContext('2d');
+    if (!context) return;
+
+    // Explicitly typed constant to help TS narrowing in closures
+    const ctx: CanvasRenderingContext2D = context;
 
     const size = GRID_SIZE * cellSize;
     canvas.width = size * scale;
@@ -90,10 +95,9 @@ export default function GameCanvas() {
     ctx.scale(scale, scale);
 
     let animationId: number;
+
     const render = () => {
       ctx.clearRect(0, 0, size, size);
-
-      // --- Spotlight removed for clean design ---
 
       // Normal Food
       ctx.fillStyle = theme.food;
@@ -143,9 +147,17 @@ export default function GameCanvas() {
         }
       }
 
-      // Snake Rendering (Smooth Vector Positions)
-      snake.forEach((segment, index) => {
-        const isHead = index === 0;
+      // Snake Rendering
+      const { direction } = useGameStore.getState();
+      const angle =
+        direction === 'RIGHT' ? 0 :
+          direction === 'DOWN' ? Math.PI / 2 :
+            direction === 'LEFT' ? Math.PI :
+              -Math.PI / 2;
+
+      for (let i = 0; i < snake.length; i++) {
+        const segment = snake[i];
+        const isHead = i === 0;
         const x = segment.x * cellSize;
         const y = segment.y * cellSize;
 
@@ -165,36 +177,19 @@ export default function GameCanvas() {
         }
 
         const radius = isHead ? cellSize / 2 : cellSize / 4;
-        const padding = isHead ? 0.5 : 2.5; // Increased padding for distinct segments
-
-        // Phantom Trail Effect (Motion Blur) - DISABLED for clean classic look
-        if (false && settings.physicsMode && index > 0 && index < 5 && ctx) {
-          ctx.save();
-          ctx.globalAlpha = 0.1 / index;
-          ctx.fillStyle = theme.snakeBody[0];
-          ctx.beginPath();
-          ctx.arc(x + cellSize / 2, y + cellSize / 2, radius * 1.5, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
-        }
+        const padding = isHead ? 0.5 : 2.5;
 
         ctx.save();
         ctx.translate(x + cellSize / 2, y + cellSize / 2);
 
-        // Add rotation based on direction in classic mode
         if (isHead) {
-          const { direction } = useGameStore.getState();
-          const angle =
-            direction === 'RIGHT' ? 0 :
-              direction === 'DOWN' ? Math.PI / 2 :
-                direction === 'LEFT' ? Math.PI :
-                  -Math.PI / 2;
           ctx.rotate(angle);
         }
 
         ctx.beginPath();
-        if (ctx.roundRect) {
-          ctx.roundRect(-cellSize / 2 + padding, -cellSize / 2 + padding, cellSize - (padding * 2), cellSize - (padding * 2), radius);
+        // Check for roundRect availability without explicit type casting
+        if (typeof (ctx as any).roundRect === 'function') {
+          (ctx as any).roundRect(-cellSize / 2 + padding, -cellSize / 2 + padding, cellSize - (padding * 2), cellSize - (padding * 2), radius);
         } else {
           ctx.rect(-cellSize / 2 + padding, -cellSize / 2 + padding, cellSize - (padding * 2), cellSize - (padding * 2));
         }
@@ -210,29 +205,31 @@ export default function GameCanvas() {
           ctx.fill();
         }
         ctx.restore();
-      });
+      }
 
       // Ghost Replay Rendering
-      if (settings.showGhost && lastReplay && lastReplay.length > ghostFrameIndex) {
+      if (settings.showGhost && lastReplay && ghostFrameIndex < lastReplay.length) {
         const ghostFrame = lastReplay[ghostFrameIndex];
         if (ghostFrame) {
-          ghostFrame.snake.forEach((segment) => {
+          const ghostSnake = ghostFrame.snake;
+          for (let i = 0; i < ghostSnake.length; i++) {
+            const segment = ghostSnake[i];
             const x = segment.x * cellSize;
             const y = segment.y * cellSize;
 
             ctx.save();
-            ctx.globalAlpha = 0.15; // Very faint ghost
+            ctx.globalAlpha = 0.15;
             ctx.fillStyle = '#A5F3FC';
             ctx.translate(x + cellSize / 2, y + cellSize / 2);
             ctx.beginPath();
-            if (ctx.roundRect) {
-              ctx.roundRect(-cellSize / 2 + 2, -cellSize / 2 + 2, cellSize - 4, cellSize - 4, cellSize / 3);
+            if (typeof (ctx as any).roundRect === 'function') {
+              (ctx as any).roundRect(-cellSize / 2 + 2, -cellSize / 2 + 2, cellSize - 4, cellSize - 4, cellSize / 3);
             } else {
               ctx.rect(-cellSize / 2 + 2, -cellSize / 2 + 2, cellSize - 4, cellSize - 4);
             }
             ctx.fill();
             ctx.restore();
-          });
+          }
         }
       }
 
@@ -242,7 +239,7 @@ export default function GameCanvas() {
 
     render();
     return () => cancelAnimationFrame(animationId);
-  }, [snake, food, specialFood, cellSize, scale, settings.theme, settings.showGhost, lastReplay, ghostFrameIndex]);
+  }, [snake, food, specialFood, cellSize, scale, theme, settings.showGhost, lastReplay, ghostFrameIndex]);
 
   return (
     <div
