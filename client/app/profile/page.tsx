@@ -55,26 +55,27 @@ export default function ProfilePage() {
   if (!user || !profile) return null;
 
   return (
-    <div className="min-h-screen pt-28 pb-12 px-4 relative">
+    <div className="min-h-screen pt-8 pb-12 px-4 relative">
       <div className="max-w-5xl mx-auto space-y-8 relative z-10">
         {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="premium-card rounded-[2.5rem] p-10 border border-primary-border flex flex-col md:flex-row items-center gap-10"
+          className="premium-card rounded-2xl sm:rounded-[2.5rem] p-5 sm:p-10 border border-primary-border flex flex-col md:flex-row items-center gap-5 sm:gap-10"
         >
           <div className="relative">
-            <div className="w-32 h-32 bg-primary-green/10 rounded-full flex items-center justify-center border-2 border-primary-green shadow-green-glow animate-pulse">
-              <FaUserCircle size={80} className="text-primary-green" />
+            <div className="w-20 h-20 sm:w-32 sm:h-32 bg-primary-green/10 rounded-full flex items-center justify-center border-2 border-primary-green shadow-green-glow animate-pulse">
+              <FaUserCircle size={48} className="text-primary-green sm:hidden" />
+              <FaUserCircle size={80} className="text-primary-green hidden sm:block" />
             </div>
-            <div className="absolute -bottom-2 -right-2 bg-primary-green text-black px-4 py-1 rounded-full text-xs font-black italic shadow-green-glow">
+            <div className="absolute -bottom-2 -right-2 bg-primary-green text-black px-2 sm:px-4 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-black italic shadow-green-glow">
               LVL {Math.floor((stats?.highestScore || 0) / 50) + 1}
             </div>
           </div>
 
-          <div className="text-center md:text-left flex-1">
-            <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
-              <h1 className="text-4xl font-black text-white italic tracking-tighter uppercase">{profile.fullName}</h1>
+          <div className="text-center md:text-left flex-1 min-w-0">
+            <div className="flex flex-col md:flex-row md:items-center gap-2 sm:gap-4 mb-3 sm:mb-4">
+              <h1 className="text-2xl sm:text-4xl font-black text-white italic tracking-tighter uppercase truncate">{profile.fullName}</h1>
               <span className="bg-white/5 border border-white/10 px-4 py-1 rounded-full text-[10px] font-bold tracking-widest text-primary-text/40">@{profile.username}</span>
             </div>
             <div className="flex flex-wrap gap-4 justify-center md:justify-start">
@@ -90,7 +91,7 @@ export default function ProfilePage() {
         </motion.div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {[
             { icon: FaTrophy, label: 'HIGHEST SCORE', value: stats?.highestScore || 0, color: 'text-primary-green' },
             { icon: FaGamepad, label: 'TOTAL GAMES', value: stats?.totalGames || 0, color: 'text-blue-500' },

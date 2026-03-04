@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { FaUsers, FaSignOutAlt, FaHome, FaGamepad, FaShieldAlt } from 'react-icons/fa';
 import { signOut, auth } from '@/lib/firebase';
+import AdminMobileNav from '@/components/AdminMobileNav';
 
 export default function AdminLayout({
     children,
@@ -54,8 +55,8 @@ export default function AdminLayout({
 
     return (
         <div className="min-h-screen bg-primary-bg flex font-sans">
-            {/* Sidebar */}
-            <aside className="w-16 sm:w-64 lg:w-80 premium-card border-r border-primary-border flex flex-col fixed h-full z-50">
+            {/* Sidebar - Hidden on smallest screens */}
+            <aside className="hidden sm:flex w-16 sm:w-64 lg:w-80 premium-card border-r border-primary-border flex-col fixed h-full z-50">
                 <div className="p-4 sm:p-8 lg:p-10">
                     <div className="flex items-center gap-3 mb-8 sm:mb-12">
                         <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary-green/10 border border-primary-green/20 rounded-xl flex items-center justify-center shadow-green-glow flex-shrink-0">
@@ -106,7 +107,8 @@ export default function AdminLayout({
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 ml-16 sm:ml-64 lg:ml-80 p-4 sm:p-8 lg:p-12 bg-dark-gradient min-h-screen">
+            <main className="flex-1 ml-0 sm:ml-16 md:ml-64 lg:ml-80 p-4 sm:p-8 lg:p-12 bg-dark-gradient min-h-screen">
+                <AdminMobileNav />
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}

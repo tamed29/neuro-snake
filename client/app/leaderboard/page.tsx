@@ -36,22 +36,22 @@ export default function LeaderboardPage() {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4">
+    <div className="min-h-screen pt-8 pb-12 px-4">
       <div className="max-w-4xl mx-auto">
         <motion.h1
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-4xl md:text-5xl font-bold text-center mb-8 text-primary-green glow-text"
+          className="text-2xl sm:text-4xl md:text-5xl font-bold text-center mb-6 sm:mb-8 text-primary-green glow-text"
         >
           LEADERBOARD
         </motion.h1>
 
-        <div className="flex flex-wrap gap-3 justify-center mb-8">
+        <div className="flex flex-wrap gap-2 sm:gap-3 justify-center mb-6 sm:mb-8">
           {(['Easy', 'Normal', 'Hard', 'Insane'] as const).map((difficulty) => (
             <motion.button
               key={difficulty}
               onClick={() => setFilter(difficulty)}
-              className={`px-6 py-2 rounded-lg font-semibold transition-all ${filter === difficulty
+              className={`px-4 sm:px-6 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all ${filter === difficulty
                 ? 'bg-primary-green text-black shadow-green-glow'
                 : 'bg-primary-card border border-primary-border text-primary-text hover:border-primary-green'
                 }`}
@@ -87,11 +87,11 @@ export default function LeaderboardPage() {
                 >
                   <div className="w-12 flex justify-center">{getRankIcon(index)}</div>
                   <div className="flex-1">
-                    <p className="font-semibold text-lg">{entry.username}</p>
+                    <p className="font-semibold text-sm sm:text-lg">{entry.username}</p>
                     <p className="text-sm text-primary-text/60">{entry.difficulty}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-primary-green">{entry.score}</p>
+                    <p className="text-xl sm:text-2xl font-bold text-primary-green">{entry.score}</p>
                   </div>
                 </motion.div>
               ))}

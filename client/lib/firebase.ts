@@ -10,6 +10,7 @@ import {
   signInWithPopup
 } from 'firebase/auth';
 import {
+  getFirestore,
   initializeFirestore,
   persistentLocalCache,
   persistentMultipleTabManager
@@ -27,12 +28,20 @@ const firebaseConfig = {
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 export const auth = getAuth(app);
 
-// Initialize Firestore with modern persistent cache
-export const db = initializeFirestore(app, {
-  localCache: persistentLocalCache({
-    tabManager: persistentMultipleTabManager()
-  })
-});
+// Initialize Firestore — guard against double-init (e.g. HMR in dev)
+function getDb() {
+  try {
+    return initializeFirestore(app, {
+      localCache: persistentLocalCache({
+        tabManager: persistentMultipleTabManager()
+      })
+    });
+  } catch {
+    // Already initialized — return the existing instance
+    return getFirestore(app);
+  }
+}
+export const db = getDb();
 
 export const googleProvider = new GoogleAuthProvider();
 export const githubProvider = new GithubAuthProvider();

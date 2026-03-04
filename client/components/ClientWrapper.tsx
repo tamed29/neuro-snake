@@ -13,7 +13,8 @@ export default function ClientWrapper({ children }: { children: React.ReactNode 
 
     const particles = useMemo(() => {
         if (!mounted) return [];
-        return Array.from({ length: 30 }).map((_, i) => ({
+        // Reduce particles for better loading performance (30 -> 15)
+        return Array.from({ length: 15 }).map((_, i) => ({
             id: i,
             left: `${Math.random() * 100}%`,
             duration: `${10 + Math.random() * 20}s`,

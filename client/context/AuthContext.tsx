@@ -29,61 +29,46 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-            setUser(firebaseUser);
+            const currentPath = window.location.pathname; // Use current path for stable checks
 
             if (firebaseUser) {
+                setUser(firebaseUser);
                 try {
-                    const userProfile = await getUserProfile(firebaseUser.uid);
-
-                    // Pre-flight Admin Elevation for specific account
+                    // Check if we need to elevate for admin
                     if (firebaseUser.email === 'snake1@gmail.com') {
+                        // elevation logic inside ensures profile exists or is updated
                         await ensureAdminProfile(firebaseUser.uid, firebaseUser.email);
-                        // Refresh profile after elevation if it was missing or not admin
-                        if (!userProfile || userProfile.role !== 'admin') {
-                            const updatedProfile = await getUserProfile(firebaseUser.uid);
-                            setProfile(updatedProfile);
-                        } else {
-                            setProfile(userProfile);
-                        }
-                    } else {
-                        setProfile(userProfile);
                     }
 
-                    // Role-based routing protection - ONLY after profile is loaded
-                    // /admin/login is a public page, skip protection
-                    if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
-                        const finalProfile = firebaseUser.email === 'snake1@gmail.com' ? (await getUserProfile(firebaseUser.uid)) : userProfile;
-                        if (finalProfile?.role !== 'admin') {
+                    const userProfile = await getUserProfile(firebaseUser.uid);
+                    setProfile(userProfile);
+
+                    // Role-based routing protection
+                    if (currentPath.startsWith('/admin') && currentPath !== '/admin/login') {
+                        if (userProfile?.role !== 'admin') {
                             router.push('/admin/login');
                         }
                     }
                 } catch (error) {
-                    console.error('Error fetching profile:', error);
-                    setProfile(null);
-                    // If profile fetch fails for an admin route, redirect to admin login
-                    if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
-                        router.push('/admin/login');
-                    }
+                    console.error('Auth error:', error);
+                } finally {
+                    setLoading(false);
                 }
             } else {
+                setUser(null);
                 setProfile(null);
-                // Protection for user-only routes
-                // /admin/login is public - don't redirect it
-                const protectedRoutes = ['/profile'];
-                if (protectedRoutes.some(route => pathname.startsWith(route))) {
+                setLoading(false);
+
+                if (currentPath.startsWith('/admin') && currentPath !== '/admin/login') {
+                    router.push('/admin/login');
+                } else if (['/profile', '/game'].some(route => currentPath.startsWith(route))) {
                     router.push('/login');
                 }
-                // Admin routes (except /admin/login) redirect to admin login
-                if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
-                    router.push('/admin/login');
-                }
             }
-
-            setLoading(false);
         });
 
         return () => unsubscribe();
-    }, [pathname, router]);
+    }, [router]); // Reduced dependencies to avoid re-triggering logic unnecessarily
 
     return (
         <AuthContext.Provider value={{

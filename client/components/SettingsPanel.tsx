@@ -36,22 +36,22 @@ export default function SettingsPanel() {
                             initial={{ scale: 0.95, y: 10 }}
                             animate={{ scale: 1, y: 0 }}
                             exit={{ scale: 0.95, y: 10 }}
-                            className="premium-card border border-primary-border rounded-[2.5rem] p-10 max-w-md w-full shadow-2xl overflow-hidden relative"
+                            className="premium-card border border-primary-border rounded-[1.5rem] sm:rounded-[2.5rem] p-5 sm:p-10 max-w-md w-full shadow-2xl overflow-hidden relative"
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <div className="flex justify-between items-center mb-10">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-primary-green/10 rounded-xl flex items-center justify-center border border-primary-green/20">
+                            <div className="flex justify-between items-center mb-5 sm:mb-10">
+                                <div className="flex items-center gap-2 sm:gap-3">
+                                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-green/10 rounded-xl flex items-center justify-center border border-primary-green/20">
                                         <FaCog className="text-primary-green" />
                                     </div>
-                                    <h2 className="text-3xl font-black text-white italic tracking-tighter uppercase">Settings</h2>
+                                    <h2 className="text-xl sm:text-3xl font-black text-white italic tracking-tighter uppercase">Settings</h2>
                                 </div>
                                 <button onClick={() => setIsOpen(false)} className="w-10 h-10 flex items-center justify-center text-primary-text/40 hover:text-white transition-colors">
                                     <FaTimes size={20} />
                                 </button>
                             </div>
 
-                            <div className="space-y-8 max-h-[70vh] overflow-y-auto pr-4 custom-scrollbar">
+                            <div className="space-y-5 sm:space-y-8 max-h-[65vh] overflow-y-auto pr-2 sm:pr-4 custom-scrollbar">
                                 {/* Theme Selector */}
                                 <div className="space-y-4">
                                     <label className="text-[10px] font-black text-primary-text/20 uppercase tracking-[0.3em] flex items-center gap-2">
@@ -170,7 +170,7 @@ export default function SettingsPanel() {
                             initial={{ scale: 0.95, x: 20 }}
                             animate={{ scale: 1, x: 0 }}
                             exit={{ scale: 0.95, x: 20 }}
-                            className="premium-card border border-primary-border rounded-[3rem] p-12 max-w-lg w-full shadow-2xl space-y-10 relative"
+                            className="premium-card border border-primary-border rounded-[1.5rem] sm:rounded-[3rem] p-6 sm:p-12 max-w-lg w-full shadow-2xl space-y-6 sm:space-y-10 relative"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <button
@@ -181,11 +181,12 @@ export default function SettingsPanel() {
                             </button>
 
                             <div className="flex flex-col items-center">
-                                <div className="w-16 h-16 bg-primary-green/10 rounded-2xl flex items-center justify-center border border-primary-green shadow-green-glow mb-6">
-                                    <FaQuestionCircle size={32} className="text-primary-green" />
+                                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary-green/10 rounded-2xl flex items-center justify-center border border-primary-green shadow-green-glow mb-4 sm:mb-6">
+                                    <FaQuestionCircle size={24} className="text-primary-green sm:hidden" />
+                                    <FaQuestionCircle size={32} className="text-primary-green hidden sm:block" />
                                 </div>
-                                <h2 className="text-4xl font-black text-white italic tracking-tighter uppercase mb-2">Protocol <span className="text-primary-green">Guide</span></h2>
-                                <p className="text-primary-text/40 text-[10px] font-black uppercase tracking-[0.3em]">Operational Instructions</p>
+                                <h2 className="text-2xl sm:text-4xl font-black text-white italic tracking-tighter uppercase mb-1 sm:mb-2">Protocol <span className="text-primary-green">Guide</span></h2>
+                                <p className="text-primary-text/40 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em]">Operational Instructions</p>
                             </div>
 
                             <div className="space-y-8">
@@ -223,7 +224,7 @@ export default function SettingsPanel() {
 
                             <button
                                 onClick={() => setShowHowToPlay(false)}
-                                className="w-full py-5 bg-primary-green text-black rounded-3xl font-black text-xs uppercase tracking-[0.2em] shadow-green-glow active:scale-95 transition-all"
+                                className="w-full py-3 sm:py-5 bg-primary-green text-black rounded-2xl sm:rounded-3xl font-black text-xs uppercase tracking-[0.2em] shadow-green-glow active:scale-95 transition-all"
                             >
                                 Acknowledge & Execute
                             </button>

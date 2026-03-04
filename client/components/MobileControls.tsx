@@ -12,7 +12,7 @@ interface MobileControlsProps {
 
 export default function MobileControls({ onDirectionChange }: MobileControlsProps) {
   return (
-    <div className="md:hidden flex flex-col items-center justify-center py-10 px-6">
+    <div className="md:hidden flex flex-col items-center justify-center py-4 sm:py-10 px-4 sm:px-6">
       <VirtualJoystick onDirectionChange={onDirectionChange} />
     </div>
   );

@@ -26,22 +26,20 @@ function LoginContent() {
         setLoading(true);
 
         try {
+            // Prevent attempting user login with known admin email up front
+            if (!isAdminLogin && formData.email === 'snake@gmail.com') {
+                throw new Error('Administrators must log in via the Admin Login portal.');
+            }
+
             const credential = await signInWithEmailAndPassword(auth, formData.email, formData.password);
 
             if (isAdminLogin && formData.email === 'snake@gmail.com') {
                 await ensureAdminProfile(credential.user.uid, formData.email);
             }
 
-            // Route admins to admin dashboard, regular users to game
-            const profile = await getUserProfile(credential.user.uid);
-
+            // Optimization: Trigger redirect immediately. AuthContext will handle the final safety check.
             if (isAdminLogin) {
-                if (profile?.role === 'admin' || formData.email === 'snake@gmail.com') {
-                    router.push('/admin');
-                } else {
-                    await auth.signOut();
-                    setError('Access denied. Administrator privileges required.');
-                }
+                router.push('/admin');
             } else {
                 router.push('/game');
             }

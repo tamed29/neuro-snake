@@ -38,27 +38,25 @@ export default function GameOverSummary({ onRestart }: GameOverSummaryProps) {
             animate={{
                 opacity: 1,
                 scale: 1,
-                y: 0,
-                x: [0, -10, 10, -10, 10, 0]
+                y: 0
             }}
             transition={{
-                duration: 0.5,
-                times: [0, 0.1, 0.2, 0.3, 0.4, 1]
+                duration: 0.3
             }}
-            className="premium-card border border-primary-border rounded-[3rem] p-10 max-w-lg w-full shadow-2xl relative overflow-hidden"
+            className="premium-card border border-primary-border rounded-[1.5rem] sm:rounded-[3rem] p-4 sm:p-10 max-w-lg w-full shadow-2xl relative overflow-hidden mx-auto"
         >
             <div className="absolute top-0 right-0 w-32 h-32 bg-primary-green/5 blur-[60px] rounded-full -z-10" />
 
-            <div className="text-center mb-12">
+            <div className="text-center mb-5 sm:mb-12">
                 <motion.h2
                     initial={{ y: -20 }}
                     animate={{ y: 0 }}
-                    className="text-6xl font-black text-white italic tracking-tighter mb-2 uppercase leading-none"
+                    className="text-4xl sm:text-6xl font-black text-white italic tracking-tighter mb-1 sm:mb-2 uppercase leading-none"
                 >
                     SESSION <br />
                     <span className="text-primary-green">TERMINATED</span>
                 </motion.h2>
-                <p className="text-primary-text/40 text-[10px] font-black uppercase tracking-[0.3em] mt-4">
+                <p className="text-primary-text/40 text-[8px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] mt-2 sm:mt-4">
                     Analytical Report • {difficulty}
                 </p>
                 {!user && (
@@ -70,19 +68,19 @@ export default function GameOverSummary({ onRestart }: GameOverSummaryProps) {
                 )}
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mb-12">
+            <div className="grid grid-cols-2 xs:grid-cols-2 gap-2 sm:gap-4 mb-4 sm:mb-12">
                 {stats.map((stat, index) => (
                     <motion.div
                         key={stat.label}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.05 }}
-                        className={`p-6 rounded-3xl bg-black/40 border border-white/5 flex flex-col items-center justify-center text-center ${index === 0 ? 'col-span-2 bg-primary-green/5 border-primary-green/20' : ''
+                        className={`p-2 sm:p-6 rounded-xl sm:rounded-3xl bg-black/40 border border-white/5 flex flex-col items-center justify-center text-center ${index === 0 ? 'col-span-2 bg-primary-green/5 border-primary-green/20 py-4 sm:py-8' : ''
                             }`}
                     >
-                        <div className="text-xl mb-3 opacity-50">{stat.icon}</div>
-                        <div className="text-3xl font-black text-white leading-none italic tracking-tighter">{stat.value}</div>
-                        <div className="text-[9px] font-black text-primary-text/30 uppercase tracking-[0.2em] mt-3">
+                        <div className="text-sm sm:text-xl mb-0.5 sm:mb-3 opacity-50">{stat.icon}</div>
+                        <div className="text-lg sm:text-3xl font-black text-white leading-none italic tracking-tighter">{stat.value}</div>
+                        <div className="text-[7px] sm:text-[9px] font-black text-primary-text/30 uppercase tracking-[0.1em] sm:tracking-[0.2em] mt-1 sm:mt-3">
                             {stat.label}
                         </div>
                     </motion.div>
@@ -101,10 +99,10 @@ export default function GameOverSummary({ onRestart }: GameOverSummaryProps) {
                 ) : (
                     <motion.button
                         onClick={() => onRestart(difficulty)}
-                        className="w-full py-5 bg-primary-green text-black rounded-2xl font-black text-sm flex items-center justify-center gap-3 shadow-green-glow active:scale-95 transition-all uppercase tracking-[0.2em]"
+                        className="w-full py-5 sm:py-6 bg-primary-green text-black rounded-xl sm:rounded-2xl font-black text-sm sm:text-base flex items-center justify-center gap-3 shadow-green-glow active:scale-95 transition-all uppercase tracking-[0.2em]"
                         whileHover={{ scale: 1.02 }}
                     >
-                        <FaRedo /> INITIALIZE REBOOT
+                        <FaRedo size={20} /> INITIALIZE REBOOT
                     </motion.button>
                 )}
 

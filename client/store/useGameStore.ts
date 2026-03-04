@@ -118,6 +118,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   level: 1,
   growthPending: 0,
   replayRecording: [],
+  lastReplay: null,
   ghostFrameIndex: 0,
   isRecording: false,
   settings: loadSettings(),

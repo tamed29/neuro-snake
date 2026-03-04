@@ -21,7 +21,7 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-primary-bg pt-20">
+    <div className="min-h-screen relative overflow-hidden bg-primary-bg pt-8">
       <BackgroundShaders />
       {/* Decorative Elements */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-primary-green/5 blur-[120px] rounded-full -z-10" />
@@ -46,29 +46,29 @@ export default function Home() {
             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary-green/80">System Protocol 2.0.4 Online</span>
           </motion.div>
 
-          <h1 className="text-[52px] sm:text-[80px] md:text-[160px] font-black leading-none italic tracking-tighter text-white mb-6 sm:mb-8 uppercase flex flex-col md:block">
+          <h1 className="text-[44px] sm:text-[72px] md:text-[140px] font-black leading-none italic tracking-tighter text-white mb-4 sm:mb-8 uppercase flex flex-col md:block">
             SNAKE <span className="text-primary-green glow-text drop-shadow-[0_0_30px_rgba(80,200,120,0.3)]">PRO</span>
           </h1>
 
-          <p className="max-w-2xl mx-auto text-primary-text/40 text-base md:text-lg font-bold leading-relaxed mb-16 italic uppercase tracking-wider">
+          <p className="max-w-2xl mx-auto text-primary-text/40 text-xs sm:text-base md:text-lg font-bold leading-relaxed mb-10 sm:mb-16 italic uppercase tracking-wider">
             Industrial grade arcade mechanics.<br />
             Redefined for the elite competitive landscape.
           </p>
 
-          <div className="flex flex-col items-center justify-center gap-4 sm:gap-8 w-full px-2">
+          <div className="flex flex-col items-center justify-center gap-3 sm:gap-6 w-full px-2">
             <motion.button
               onClick={() => router.push('/game')}
-              className="group relative w-full sm:w-auto px-8 sm:px-16 py-4 sm:py-6 bg-primary-green text-black rounded-2xl sm:rounded-[2rem] font-black text-base sm:text-xl shadow-green-glow transition-all active:scale-95 overflow-hidden"
+              className="group relative w-full sm:w-auto px-6 sm:px-14 py-3.5 sm:py-5 bg-primary-green text-black rounded-xl sm:rounded-[2rem] font-black text-sm sm:text-xl shadow-green-glow transition-all active:scale-95 overflow-hidden"
               whileHover={{ scale: 1.02 }}
             >
               <div className="absolute inset-0 bg-white/30 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-              <div className="relative flex items-center justify-center gap-3">
-                AUTHENTICATE & START <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+              <div className="relative flex items-center justify-center gap-2">
+                AUTHENTICATE & START <ChevronRight size={13} className="group-hover:translate-x-1 transition-transform" />
               </div>
             </motion.button>
             <button
               onClick={() => router.push('/leaderboard')}
-              className="w-full sm:w-auto px-8 sm:px-12 py-4 sm:py-6 bg-white/[0.02] border border-white/10 text-white rounded-2xl sm:rounded-[2rem] font-black text-base sm:text-xl hover:bg-white/[0.05] hover:border-white/20 transition-all active:scale-95 uppercase italic"
+              className="w-full sm:w-auto px-6 sm:px-12 py-3.5 sm:py-5 bg-white/[0.02] border border-white/10 text-white rounded-xl sm:rounded-[2rem] font-black text-sm sm:text-xl hover:bg-white/[0.05] hover:border-white/20 transition-all active:scale-95 uppercase italic"
             >
               Hall of Records
             </button>
@@ -76,14 +76,14 @@ export default function Home() {
         </motion.div>
 
         {/* Feature Grid */}
-        <div className="grid md:grid-cols-3 gap-8 mt-32">
+        <div className="grid md:grid-cols-3 gap-4 sm:gap-8 mt-16 sm:mt-32">
           {features.map((f, i) => (
             <motion.div
               key={f.title}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 + i * 0.1 }}
-              className="premium-card p-10 rounded-[2.5rem] border border-primary-border text-left group"
+              className="premium-card p-5 sm:p-10 rounded-2xl sm:rounded-[2.5rem] border border-primary-border text-left group"
             >
               <div className="w-14 h-14 bg-black/40 rounded-2xl border border-white/5 flex items-center justify-center mb-8 group-hover:border-primary-green/50 transition-colors">
                 <f.icon className="text-primary-green" size={24} />

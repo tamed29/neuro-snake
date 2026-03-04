@@ -77,7 +77,7 @@ export default function RegisterPage() {
                 email: formData.email,
             });
 
-            await auth.signOut();
+            // Rapid transition to login
             router.push('/login?registered=true');
         } catch (err: any) {
             console.error(err);

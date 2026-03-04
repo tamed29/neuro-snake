@@ -106,12 +106,12 @@ export default function GamePage() {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 transition-all duration-700 bg-[#0B0F14]">
+    <div className="min-h-screen pt-3 sm:pt-8 pb-8 sm:pb-12 px-2 sm:px-4 transition-all duration-700 bg-[#0B0F14]">
       <div className="max-w-6xl mx-auto">
-        <div className="grid lg:grid-cols-[1fr_350px] gap-8 items-start">
-          <div className="flex flex-col items-center">
+        <div className="flex flex-col lg:grid lg:grid-cols-[1fr_350px] gap-3 sm:gap-8 items-stretch lg:items-start">
+          <div className="flex flex-col items-center w-full">
             {/* Header Area */}
-            <div className="w-full flex justify-end items-center mb-6 px-4">
+            <div className="w-full flex justify-end items-center mb-2 sm:mb-6 px-1 sm:px-4">
               <div className="flex items-center gap-3">
                 <SettingsPanel />
               </div>
@@ -130,10 +130,10 @@ export default function GamePage() {
                     className="absolute inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-20"
                   >
                     <motion.div initial={{ scale: 0.8, y: 20 }} animate={{ scale: 1, y: 0 }} className="text-center">
-                      <h2 className="text-6xl font-black text-white italic mb-8 tracking-tighter">PAUSED</h2>
+                      <h2 className="text-3xl sm:text-6xl font-black text-white italic mb-4 sm:mb-8 tracking-tighter">PAUSED</h2>
                       <button
                         onClick={resumeGame}
-                        className="px-16 py-5 bg-primary-green text-black rounded-2xl font-black text-2xl shadow-green-glow hover:scale-110 transition-transform active:scale-95"
+                        className="px-8 sm:px-16 py-3 sm:py-5 bg-primary-green text-black rounded-2xl font-black text-base sm:text-2xl shadow-green-glow hover:scale-110 transition-transform active:scale-95"
                       >
                         RESUME
                       </button>
@@ -146,9 +146,11 @@ export default function GamePage() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="absolute inset-0 bg-black/80 backdrop-blur-lg flex items-center justify-center z-30 px-4"
+                    className="fixed inset-0 sm:absolute sm:inset-0 bg-black/95 backdrop-blur-xl flex items-center justify-center z-[100] px-2 py-4"
                   >
-                    <GameOverSummary onRestart={startGame} />
+                    <div className="w-full max-w-lg mx-auto overflow-y-auto max-h-screen pt-10 pb-20 px-4">
+                      <GameOverSummary onRestart={() => { resetGame(); startGame(difficulty); }} />
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -159,7 +161,7 @@ export default function GamePage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-10 w-full max-w-sm"
+                className="mt-4 sm:mt-10 w-full max-w-sm"
               >
                 <MobileControls onDirectionChange={setDirection} />
               </motion.div>
@@ -167,7 +169,7 @@ export default function GamePage() {
           </div>
 
           {/* Sidebar Area */}
-          <aside className="space-y-6">
+          <aside className="space-y-3 sm:space-y-6 w-full lg:w-auto">
             <AnimatePresence mode="wait">
               {!isPlaying && !gameOver ? (
                 <motion.div
@@ -175,20 +177,20 @@ export default function GamePage() {
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
-                  className="bg-primary-card border border-primary-border rounded-3xl p-8 shadow-xl"
+                  className="bg-primary-card border border-primary-border rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-xl"
                 >
-                  <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                  <h3 className="text-base sm:text-xl font-bold text-white mb-3 sm:mb-6 flex items-center gap-2">
                     <span className="w-2 h-2 bg-primary-green rounded-full shadow-[0_0_10px_#22C55E]" />
                     READY TO START?
                   </h3>
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     <DifficultySelector
                       selected={selectedDifficulty}
                       onSelect={setSelectedDifficulty}
                     />
                     <button
                       onClick={handleStart}
-                      className="w-full mt-4 py-5 bg-primary-green text-black rounded-2xl font-black text-xl shadow-green-glow hover:brightness-110 transition-all active:scale-95"
+                      className="w-full mt-2 sm:mt-4 py-3 sm:py-5 bg-primary-green text-black rounded-xl sm:rounded-2xl font-black text-base sm:text-xl shadow-green-glow hover:brightness-110 transition-all active:scale-95"
                     >
                       START
                     </button>
@@ -209,7 +211,7 @@ export default function GamePage() {
                       </div>
                     </div>
                   )}
-                  <div className="mt-8 text-[11px] text-primary-text/40 space-y-2 font-medium tracking-wide border-t border-primary-border pt-6">
+                  <div className="mt-4 sm:mt-8 text-[10px] sm:text-[11px] text-primary-text/40 space-y-1.5 sm:space-y-2 font-medium tracking-wide border-t border-primary-border pt-3 sm:pt-6">
                     <p className="flex justify-between"><span>MOVE</span> <span className="text-white">ARROWS / WASD</span></p>
                     <p className="flex justify-between"><span>PAUSE</span> <span className="text-white">SPACE</span></p>
                     <p className="flex justify-between"><span>SWIPE</span> <span className="text-white">TOUCH ENABLED</span></p>
@@ -221,12 +223,12 @@ export default function GamePage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 20 }}
-                  className="premium-card border border-primary-border rounded-3xl p-8 shadow-xl space-y-8"
+                  className="premium-card border border-primary-border rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-xl space-y-4 sm:space-y-8"
                 >
                   <div className="flex justify-between items-end border-b border-primary-border pb-6">
                     <div>
                       <p className="text-[10px] font-black text-primary-text/20 uppercase tracking-[0.2em] mb-2">Score Pulse</p>
-                      <p className="text-5xl font-black text-primary-green leading-none glow-text tracking-tighter italic">{score}</p>
+                      <p className="text-3xl sm:text-5xl font-black text-primary-green leading-none glow-text tracking-tighter italic">{score}</p>
                     </div>
                     <div className="text-right">
                       <p className="text-[10px] font-black text-primary-text/20 uppercase tracking-[0.2em] mb-2">Best Session</p>

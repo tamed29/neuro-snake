@@ -103,7 +103,7 @@ export default function GameCanvas() {
       ctx.arc(
         food.x * cellSize + cellSize / 2,
         food.y * cellSize + cellSize / 2,
-        cellSize / 2 - 2,
+        Math.max(0, cellSize / 2 - 0.5),
         0,
         Math.PI * 2
       );
@@ -116,12 +116,12 @@ export default function GameCanvas() {
         if (timeRemaining > 0) {
           const pulse = Math.sin(Date.now() / 100) * 2;
           ctx.fillStyle = theme.specialFood;
-          ctx.shadowBlur = (15 + pulse) * (cellSize / 20);
+          ctx.shadowBlur = Math.max(0, (15 + pulse) * (cellSize / 20));
           ctx.shadowColor = theme.specialFood;
 
           const centerX = specialFood.x * cellSize + cellSize / 2;
           const centerY = specialFood.y * cellSize + cellSize / 2;
-          const r = cellSize / 2 - 1 + (pulse / 2);
+          const r = Math.max(0, cellSize / 2 - 1 + (pulse / 2));
 
           ctx.beginPath();
           ctx.moveTo(centerX, centerY - r);
@@ -168,7 +168,7 @@ export default function GameCanvas() {
         const padding = isHead ? 0.5 : 2.5; // Increased padding for distinct segments
 
         // Phantom Trail Effect (Motion Blur) - DISABLED for clean classic look
-        if (false && settings.physicsMode && index > 0 && index < 5) {
+        if (false && settings.physicsMode && index > 0 && index < 5 && ctx) {
           ctx.save();
           ctx.globalAlpha = 0.1 / index;
           ctx.fillStyle = theme.snakeBody[0];
@@ -247,7 +247,7 @@ export default function GameCanvas() {
   return (
     <div
       ref={containerRef}
-      className={`w-full max-w-[500px] aspect-square relative mx-auto rounded-3xl border-4 border-primary-green/30 shadow-[0_0_50px_rgba(34,197,94,0.15)] overflow-hidden transition-all duration-500 ${gameOver ? 'game-over-shake grayscale' : ''
+      className={`w-full max-w-[500px] sm:max-w-none lg:max-w-[500px] aspect-square relative mx-auto rounded-xl sm:rounded-3xl border-4 border-primary-green/30 shadow-[0_0_50px_rgba(34,197,94,0.15)] overflow-hidden transition-all duration-500 ${gameOver ? 'game-over-shake grayscale' : ''
         }`}
       style={{ touchAction: 'none' }}
     >
