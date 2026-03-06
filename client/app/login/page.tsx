@@ -103,10 +103,10 @@ function LoginContent() {
                         <Gamepad2 size={28} className="text-primary-green" />
                     </div>
                     <h2 className="text-3xl sm:text-4xl font-black text-white italic tracking-tighter uppercase mb-2">
-                        {isAdminLogin ? 'Admin' : 'Access'} <span className="text-primary-green glow-text">{isAdminLogin ? 'Access' : 'Portal'}</span>
+                        {isAdminLogin ? 'Admin' : 'User'} <span className="text-primary-green glow-text">Login</span>
                     </h2>
                     <p className="text-primary-text/40 text-[10px] font-bold uppercase tracking-[0.2em] text-center">
-                        {isAdminLogin ? 'Restricted to authorised administrators' : 'Sign in to continue'}
+                        {isAdminLogin ? 'For administrators only' : 'Sign in to your account'}
                     </p>
                 </div>
 
@@ -164,7 +164,7 @@ function LoginContent() {
                     >
                         {loading ? 'Processing...' : (
                             <>
-                                Authenticate <ArrowRight size={16} />
+                                Sign In <ArrowRight size={16} />
                             </>
                         )}
                     </motion.button>
@@ -177,7 +177,7 @@ function LoginContent() {
                                 <div className="w-full border-t border-white/5"></div>
                             </div>
                             <div className="relative flex justify-center text-[10px] uppercase tracking-widest">
-                                <span className="bg-[#0D1117] px-4 text-primary-text/20 font-bold">Social Identity</span>
+                                <span className="bg-[#0D1117] px-4 text-primary-text/20 font-bold">Sign in with</span>
                             </div>
                         </div>
 
@@ -207,7 +207,7 @@ function LoginContent() {
                         <p className="text-xs text-primary-text/40">
                             New here?{' '}
                             <Link href="/register" className="text-primary-green hover:text-primary-green/80 ml-1 font-semibold transition-colors uppercase tracking-wider">
-                                Initialize Account
+                                Register now
                             </Link>
                         </p>
                     )}

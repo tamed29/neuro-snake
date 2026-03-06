@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { useGameStore } from '@/store/useGameStore';
 import { useSnakeEngine } from '@/hooks/useSnakeEngine';
@@ -39,6 +39,7 @@ export default function GamePage() {
   const { user, profile, loading: authLoading } = useAuth();
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('Normal');
   const [guestGames, setGuestGames] = useState<number>(0);
+  const scoreSavedRef = useRef<boolean>(false);
   const GUEST_LIMIT = 5;
 
   useEffect(() => {
@@ -86,7 +87,8 @@ export default function GamePage() {
   }, [isPlaying, isPaused, gameOver, setDirection, pauseGame, resumeGame, settings.controlType]);
 
   useEffect(() => {
-    if (gameOver && score > 0 && user && profile) {
+    if (gameOver && score > 0 && user && profile && !scoreSavedRef.current) {
+      scoreSavedRef.current = true;
       const username = profile.username || user.displayName || user.email || 'Anonymous';
       saveScore(user.uid, username, score, difficulty);
     }
@@ -102,6 +104,7 @@ export default function GamePage() {
       setGuestGames(newCount);
       localStorage.setItem('snake_guest_games', newCount.toString());
     }
+    scoreSavedRef.current = false;
     startGame(selectedDifficulty);
   };
 
@@ -227,11 +230,11 @@ export default function GamePage() {
                 >
                   <div className="flex justify-between items-end border-b border-primary-border pb-6">
                     <div>
-                      <p className="text-[10px] font-black text-primary-text/20 uppercase tracking-[0.2em] mb-2">Score Pulse</p>
+                      <p className="text-[10px] font-black text-primary-text/20 uppercase tracking-[0.2em] mb-2">Current Score</p>
                       <p className="text-3xl sm:text-5xl font-black text-primary-green leading-none glow-text tracking-tighter italic">{score}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-[10px] font-black text-primary-text/20 uppercase tracking-[0.2em] mb-2">Best Session</p>
+                      <p className="text-[10px] font-black text-primary-text/20 uppercase tracking-[0.2em] mb-2">Best Score</p>
                       <p className="text-2xl font-black text-white leading-none tracking-tighter italic">{Math.max(score, highScore)}</p>
                     </div>
                   </div>
@@ -242,7 +245,7 @@ export default function GamePage() {
                       <p className="text-2xl font-black text-white italic">{level}</p>
                     </div>
                     <div className="bg-black/40 p-5 rounded-[1.5rem] border border-white/5 text-center">
-                      <p className="text-[9px] font-black text-primary-text/20 uppercase mb-2 tracking-[0.1em]">Phase</p>
+                      <p className="text-[9px] font-black text-primary-text/20 uppercase mb-2 tracking-[0.1em]">Difficulty</p>
                       <p className="text-2xl font-black text-primary-green italic truncate uppercase tracking-tighter">{difficulty}</p>
                     </div>
                   </div>
@@ -251,7 +254,7 @@ export default function GamePage() {
                     onClick={resetGame}
                     className="w-full py-4 border border-red-500/10 text-red-500/40 rounded-2xl font-black hover:bg-red-500 hover:text-white hover:border-red-500 transition-all text-[10px] tracking-[0.2em] active:scale-95 uppercase"
                   >
-                    Terminate Protocol
+                    Quit Game
                   </button>
                 </motion.div>
               )}

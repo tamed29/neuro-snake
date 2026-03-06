@@ -15,9 +15,9 @@ export default function Home() {
   const router = useRouter();
 
   const features = [
-    { icon: Gamepad2, title: 'Competitive Play', desc: 'Face off against global players' },
-    { icon: Trophy, title: 'Real-time Ranking', desc: 'Secure your spot on the leaderboard' },
-    { icon: ShieldCheck, title: 'Secure Protocol', desc: 'Full encryption for your game data' },
+    { icon: Gamepad2, title: 'Competitive Play', desc: 'Play against players worldwide' },
+    { icon: Trophy, title: 'Live Leaderboard', desc: 'See where you rank in real-time' },
+    { icon: ShieldCheck, title: 'Secure Saving', desc: 'Your game data is safely stored' },
   ];
 
   return (
@@ -43,7 +43,7 @@ export default function Home() {
             className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl bg-primary-green/5 border border-primary-green/10 mb-12 shadow-inner"
           >
             <span className="w-1.5 h-1.5 bg-primary-green rounded-full animate-pulse shadow-green-glow" />
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary-green/80">System Protocol 2.0.4 Online</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary-green/80">System Online</span>
           </motion.div>
 
           <h1 className="text-[44px] sm:text-[72px] md:text-[140px] font-black leading-none italic tracking-tighter text-white mb-4 sm:mb-8 uppercase flex flex-col md:block">
@@ -51,8 +51,8 @@ export default function Home() {
           </h1>
 
           <p className="max-w-2xl mx-auto text-primary-text/40 text-xs sm:text-base md:text-lg font-bold leading-relaxed mb-10 sm:mb-16 italic uppercase tracking-wider">
-            Industrial grade arcade mechanics.<br />
-            Redefined for the elite competitive landscape.
+            Pro-level arcade mechanics.<br />
+            Redefined for competitive play.
           </p>
 
           <div className="flex flex-col items-center justify-center gap-3 sm:gap-6 w-full px-2">
@@ -63,14 +63,14 @@ export default function Home() {
             >
               <div className="absolute inset-0 bg-white/30 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
               <div className="relative flex items-center justify-center gap-2">
-                AUTHENTICATE & START <ChevronRight size={13} className="group-hover:translate-x-1 transition-transform" />
+                SIGN IN & PLAY <ChevronRight size={13} className="group-hover:translate-x-1 transition-transform" />
               </div>
             </motion.button>
             <button
               onClick={() => router.push('/leaderboard')}
               className="w-full sm:w-auto px-6 sm:px-12 py-3.5 sm:py-5 bg-white/[0.02] border border-white/10 text-white rounded-xl sm:rounded-[2rem] font-black text-sm sm:text-xl hover:bg-white/[0.05] hover:border-white/20 transition-all active:scale-95 uppercase italic"
             >
-              Hall of Records
+              Leaderboard
             </button>
           </div>
         </motion.div>

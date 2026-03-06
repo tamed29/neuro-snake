@@ -45,13 +45,13 @@ export default function RegisterPage() {
         setLoading(true);
 
         if (formData.password !== formData.confirmPassword) {
-            setError('ACCESS KEYS DO NOT MATCH');
+            setError('PASSWORDS DO NOT MATCH');
             setLoading(false);
             return;
         }
 
         if (!validatePassword(formData.password)) {
-            setError('KEY REQUIREMENTS: MIN 8 CHARS, 1 UPPER, 1 NUMBER, 1 SPECIAL');
+            setError('PASSWORD REQUIREMENTS: MIN 8 CHARS, 1 UPPER, 1 NUMBER, 1 SPECIAL');
             setLoading(false);
             return;
         }
@@ -59,7 +59,7 @@ export default function RegisterPage() {
         try {
             const usernameAvailable = await isUsernameAvailable(formData.username);
             if (!usernameAvailable) {
-                setError('IDENTIFIER REJECTED: USERNAME ALREADY IN USE');
+                setError('USERNAME IS ALREADY TAKEN');
                 setLoading(false);
                 return;
             }
@@ -82,11 +82,11 @@ export default function RegisterPage() {
         } catch (err: any) {
             console.error(err);
             if (err.message?.includes('NETWORK_OFFLINE')) {
-                setError('CONNECTION FAILURE: SYSTEMS ARE OFFLINE. PLEASE RETRY IN A MOMENT.');
+                setError('CONNECTION ERROR: YOU ARE OFFLINE. PLEASE CHECK YOUR INTERNET.');
             } else if (err.code === 'auth/email-already-in-use') {
                 setError('EMAIL ALREADY IN USE: PLEASE LOGIN OR USE ANOTHER EMAIL');
             } else {
-                setError(err.message || 'PROTOCOL FAILURE: ACCOUNT CREATION ABORTED');
+                setError(err.message || 'REGISTRATION FAILED: PLEASE TRY AGAIN');
             }
         } finally {
             setLoading(false);

@@ -69,7 +69,7 @@ export default function ProfilePage() {
               <FaUserCircle size={80} className="text-primary-green hidden sm:block" />
             </div>
             <div className="absolute -bottom-2 -right-2 bg-primary-green text-black px-2 sm:px-4 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-black italic shadow-green-glow">
-              LVL {Math.floor((stats?.highestScore || 0) / 50) + 1}
+              Level {Math.floor((stats?.highestScore || 0) / 50) + 1}
             </div>
           </div>
 
@@ -93,7 +93,7 @@ export default function ProfilePage() {
         {/* Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {[
-            { icon: FaTrophy, label: 'HIGHEST SCORE', value: stats?.highestScore || 0, color: 'text-primary-green' },
+            { icon: FaTrophy, label: 'HIGH SCORE', value: stats?.highestScore || 0, color: 'text-primary-green' },
             { icon: FaGamepad, label: 'TOTAL GAMES', value: stats?.totalGames || 0, color: 'text-blue-500' },
             { icon: FaChartLine, label: 'AVERAGE SCORE', value: stats?.averageScore || 0, color: 'text-purple-500' },
             { icon: FaStar, label: 'BEST DIFFICULTY', value: stats?.bestDifficulty?.toUpperCase() || 'N/A', color: 'text-yellow-500' },

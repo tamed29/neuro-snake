@@ -25,13 +25,17 @@ export const saveScore = async (
   }
 
   try {
+    const roundedScore = Math.floor(score);
+    console.log(`Saving score: ${roundedScore} for user ${username} (${uid})`);
+
     await addDoc(collection(db, 'scores'), {
       uid,
       username,
-      score,
+      score: roundedScore,
       difficulty,
       createdAt: Timestamp.now(),
     });
+    console.log('Score saved successfully');
   } catch (error) {
     console.error('Error saving score:', error);
     throw error;

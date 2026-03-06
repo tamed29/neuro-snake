@@ -25,11 +25,11 @@ export default function GameOverSummary({ onRestart }: GameOverSummaryProps) {
     const isLimitReached = !user && guestGames >= GUEST_LIMIT;
 
     const stats = [
-        { label: 'Final Yield', value: score, icon: <FaStar className="text-yellow-400" /> },
-        { label: 'Peak Protocol', value: highScore, icon: <FaTrophy className="text-primary-green" /> },
-        { label: 'Units Collected', value: foodEatenCount, icon: <FaAppleAlt className="text-red-500" /> },
-        { label: 'Phases', value: level, icon: <FaLayerGroup className="text-blue-400" /> },
-        { label: 'Max Surge', value: `x${maxCombo}`, icon: <FaFire className="text-orange-500" /> },
+        { label: 'Final Score', value: score, icon: <FaStar className="text-yellow-400" /> },
+        { label: 'High Score', value: highScore, icon: <FaTrophy className="text-primary-green" /> },
+        { label: 'Food Eaten', value: foodEatenCount, icon: <FaAppleAlt className="text-red-500" /> },
+        { label: 'Level', value: level, icon: <FaLayerGroup className="text-blue-400" /> },
+        { label: 'Max Combo', value: `x${maxCombo}`, icon: <FaFire className="text-orange-500" /> },
     ];
 
     return (
@@ -53,16 +53,16 @@ export default function GameOverSummary({ onRestart }: GameOverSummaryProps) {
                     animate={{ y: 0 }}
                     className="text-4xl sm:text-6xl font-black text-white italic tracking-tighter mb-1 sm:mb-2 uppercase leading-none"
                 >
-                    SESSION <br />
-                    <span className="text-primary-green">TERMINATED</span>
+                    GAME <br />
+                    <span className="text-primary-green">OVER</span>
                 </motion.h2>
                 <p className="text-primary-text/40 text-[8px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] mt-2 sm:mt-4">
-                    Analytical Report • {difficulty}
+                    Game Summary • {difficulty}
                 </p>
                 {!user && (
                     <div className="mt-4 px-4 py-2 bg-orange-500/10 border border-orange-500/20 rounded-xl inline-block">
                         <p className="text-orange-500 text-[9px] font-black uppercase tracking-widest">
-                            {isLimitReached ? 'GUEST PROTOCOL DEPLETED' : `GUEST CHANCES: ${GUEST_LIMIT - guestGames} REMAINING`}
+                            {isLimitReached ? 'GUEST LIMIT REACHED' : `GUEST PLAYS: ${GUEST_LIMIT - guestGames} REMAINING`}
                         </p>
                     </div>
                 )}
@@ -94,7 +94,7 @@ export default function GameOverSummary({ onRestart }: GameOverSummaryProps) {
                         className="w-full py-5 bg-white text-black rounded-2xl font-black text-sm flex items-center justify-center gap-3 shadow-xl active:scale-95 transition-all uppercase tracking-[0.2em]"
                         whileHover={{ scale: 1.02, backgroundColor: '#f0f0f0' }}
                     >
-                        <FaSignInAlt /> AUTHENTICATE TO CONTINUE
+                        <FaSignInAlt /> SIGN IN TO CONTINUE
                     </motion.button>
                 ) : (
                     <motion.button
@@ -102,12 +102,12 @@ export default function GameOverSummary({ onRestart }: GameOverSummaryProps) {
                         className="w-full py-5 sm:py-6 bg-primary-green text-black rounded-xl sm:rounded-2xl font-black text-sm sm:text-base flex items-center justify-center gap-3 shadow-green-glow active:scale-95 transition-all uppercase tracking-[0.2em]"
                         whileHover={{ scale: 1.02 }}
                     >
-                        <FaRedo size={20} /> INITIALIZE REBOOT
+                        <FaRedo size={20} /> PLAY AGAIN
                     </motion.button>
                 )}
 
                 <p className="text-center text-primary-text/20 text-[9px] font-black uppercase tracking-widest mt-6">
-                    Awaiting operator input...
+                    Ready for next round...
                 </p>
             </div>
         </motion.div>
